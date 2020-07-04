@@ -1,10 +1,6 @@
 """Advantage Actor-Critic (A2C) algorithm for reinforcement learning."""
 
-from deepchem.models import KerasModel
-from deepchem.models.optimizers import Adam
 import numpy as np
-import tensorflow as tf
-import tensorflow_probability as tfp
 import collections
 import copy
 import multiprocessing
@@ -12,19 +8,30 @@ import os
 import re
 import threading
 import time
+import tensorflow as tf
+import tensorflow_probability as tfp
+from deepchem.models import KerasModel
+from deepchem.models.optimizers import Adam
 
 
 class A2CLossDiscrete(object):
-  """This class computes the loss function for A2C with discrete action spaces."""
+  """This class computes the loss function for A2C with discrete action spaces.
+
+  Note
+  ----
+  This class requires tensorflow to be installed.
+  """
 
   def __init__(self, value_weight, entropy_weight, action_prob_index,
                value_index):
+
     self.value_weight = value_weight
     self.entropy_weight = entropy_weight
     self.action_prob_index = action_prob_index
     self.value_index = value_index
 
   def __call__(self, outputs, labels, weights):
+    import tensorflow as tf
     prob = outputs[self.action_prob_index]
     value = outputs[self.value_index]
     reward, advantage = weights
@@ -40,7 +47,12 @@ class A2CLossDiscrete(object):
 
 
 class A2CLossContinuous(object):
-  """This class computes the loss function for A2C with continuous action spaces."""
+  """This class computes the loss function for A2C with continuous action spaces.
+
+  Note
+  ----
+  This class requires tensorflow to be installed.
+  """
 
   def __init__(self, value_weight, entropy_weight, mean_index, std_index,
                value_index):
@@ -151,6 +163,10 @@ class A2C(object):
       the directory in which the model will be saved.  If None, a temporary directory will be created.
     use_hindsight: bool
       if True, use Hindsight Experience Replay
+
+    Note
+    ----
+    This class requires tensorflow to be installed.
     """
     self._env = env
     self._policy = policy
